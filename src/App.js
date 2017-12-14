@@ -1,21 +1,35 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import mapDispatchToProps from './action';
+import {connect} from 'react-redux';
 
 class App extends Component {
+
+  componentDidMount(){
+    this.props.connect(window.location.pathname);
+  }
+
   render() {
+    console.log(this.props.connection)
+    const channels = this.props.channels.channels.map((ch) => {
+      return (
+        <tr key={ch.url}><td>{ch.name}</td></tr>
+      )
+    })
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        {
+          !this.props.connection.connected ? 
+          (<h1>Connecting...</h1>) :
+          (<h1>Connected as {this.props.connection.user.userId}</h1>)
+        }
       </div>
     );
   }
 }
 
-export default App;
+const mapStateToProps = state => state;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);
